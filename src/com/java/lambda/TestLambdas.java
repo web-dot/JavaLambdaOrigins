@@ -98,9 +98,16 @@ public class TestLambdas {
 				new Person("Vrushabh", LocalDate.parse("1992-08-11"), Sex.MALE),
 				new Person("Hema", LocalDate.parse("2001-04-09"), Sex.FEMALE),
 				new Person("Karthik", LocalDate.parse("1980-02-27"), Sex.MALE),
-				new Person("Kishan", LocalDate.parse("1983-01-05"), Sex.MALE),
-				new Person("Junaid", LocalDate.parse("1997-01-02"), Sex.MALE));
-		
+				new Person("Kavitha", LocalDate.parse("2001-01-05"), Sex.FEMALE),
+				new Person("Junaid", LocalDate.parse("1997-01-02"), Sex.MALE),
+				new Person("Jaya", LocalDate.parse("2003-08-25"), Sex.FEMALE),
+				new Person("Shishir", LocalDate.parse("1998-03-23"), Sex.MALE),
+				new Person("Deepika", LocalDate.parse("1992-08-11"), Sex.FEMALE),
+				new Person("Hrisitha", LocalDate.parse("1998-02-18"), Sex.FEMALE),
+				new Person("Kapil", LocalDate.parse("1985-02-12"), Sex.MALE),
+				new Person("Shruthi", LocalDate.parse("1995-01-05"), Sex.FEMALE),
+				new Person("Gaurav", LocalDate.parse("1989-05-02"), Sex.MALE));
+				
 		
 		printPersonsOlderThan(roster, 30);
 		System.out.println();
@@ -110,12 +117,12 @@ public class TestLambdas {
 		 * -> You can instead separate the code that specifies the criteria for which you want to search in a 
 		 * 	different class -> Approach 3
 		 * */
-		printPersonWithinAgeRange(roster, 25, 35);
+		printPersonWithinAgeRange(roster, 18, 25);
 		
 		System.out.println();
 		printPersons(roster, new CheckPersonEligibleForSelectiveSrvice());
 	
-		
+		System.out.println();
 		//Approach 4: Specify Search Criteria code in an Anonymous Class
 		/**
 		 * This approach reduces the amount of code required because you don't have to create a new class for 
@@ -128,11 +135,11 @@ public class TestLambdas {
 				new CheckPerson() {
 					@Override
 					public boolean test(Person p) {
-						return p.getGender() == Person.Sex.MALE && p.getAge() >=18 && p.getAge() < 35; 
+						return p.getGender() == Person.Sex.MALE && p.getAge() >=18 && p.getAge() < 25; 
 					}
 				});
 		
-		
+		System.out.println();
 		//Approach 5: Specify Search Criteria code with Lambda Expression
 		/**
 		 * The CheckPerson interface is a functional interface. A functional interface is any interface that contains
@@ -144,7 +151,7 @@ public class TestLambdas {
 		
 		printPersons(roster, p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() < 25);
 		
-		
+		System.out.println();
 		/**
 		 * you can use a standard functional interface in place of interface CheckPerson, which reduces even further the
 		 * amount of code required
@@ -157,17 +164,16 @@ public class TestLambdas {
 		 * */
 		
 		//Approach 6: use Standard Functional Interface with Lambda expressions
-		
 		printPersonsWithPredicate(
 				roster,
 				new Predicate<Person>() {
 					@Override
 					public boolean test(Person t) {
-						return t.getGender() == Person.Sex.FEMALE && t.getAge() >= 18 && t.getAge() < 35;
+						return t.getGender() == Person.Sex.FEMALE && t.getAge() >= 18 && t.getAge() < 25;
 					}
 				});
 		
-		
+		System.out.println();
 		/*
 		 * The above anonymous class that creates Predicate<T> object can be written as Lambda expression as below
 		 * where the method name can be omitted
@@ -177,14 +183,14 @@ public class TestLambdas {
 				p -> p.getGender() == Person.Sex.FEMALE & p.getAge() >= 18 && p.getAge() < 25);
 		
 		
-		
+		System.out.println();
 		//Approach 7: 
 		processPersons(
 				roster,
 				new Predicate<Person>() {
 					@Override
 					public boolean test(Person t) {
-						return t.getGender() == Person.Sex.FEMALE && t.getAge() >= 18 && t.getAge() < 35;
+						return t.getGender() == Person.Sex.FEMALE && t.getAge() >= 18 && t.getAge() < 25;
 					}
 				},
 				new Consumer<Person>() {
@@ -194,12 +200,12 @@ public class TestLambdas {
 					}
 				});
 		
-		
+		System.out.println();
 		//The above expression can be rewritten using lambda expression as
 		
 		processPersons(
 				roster, 
-				p -> p.getGender() == Person.Sex.FEMALE && p.getAge() >= 18 && p.getAge() < 35, 
+				p -> p.getGender() == Person.Sex.FEMALE && p.getAge() >= 18 && p.getAge() < 25, 
 				p -> p.printPerson());
 		
 	}
