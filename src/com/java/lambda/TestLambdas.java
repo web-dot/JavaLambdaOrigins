@@ -27,6 +27,14 @@ public class TestLambdas {
 	}
 	
 	//Approach 3: Specify search criteria code in a local class
+	/**
+	 * *Although this approach is less brittle--you don't have to rewrite methods if you change the structure of Person--
+	 * you still have additional code: a new interface and a local class for each search you plan to perform in your 
+	 * application.
+	 * 
+	 * *Because checkPersonEligibleForSelectiveService implements an interface, you can use an anonymous class
+	 * instead of a local class and bypass the need to declare a new class for each search
+	 * */
 	interface CheckPerson{
 		boolean test(Person p);
 	}
@@ -37,6 +45,7 @@ public class TestLambdas {
 			return p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() <= 25;
 		}
 	}
+	
 	
 	
 	public static void printPersons(List<Person> roster, CheckPerson tester) {
@@ -50,7 +59,7 @@ public class TestLambdas {
 	
 	public static void main(String args[]) {
 		
-		List<Person> roaster = Arrays.asList(
+		List<Person> roster = Arrays.asList(
 				new Person("Harish", LocalDate.parse("1993-01-18"), Sex.MALE),
 				new Person("Lata", LocalDate.parse("1985-08-25"), Sex.FEMALE),
 				new Person("Shishir", LocalDate.parse("1998-03-23"), Sex.MALE),
@@ -61,7 +70,7 @@ public class TestLambdas {
 				new Person("Junaid", LocalDate.parse("1997-01-02"), Sex.MALE));
 		
 		
-		printPersonsOlderThan(roaster, 30);
+		printPersonsOlderThan(roster, 30);
 		System.out.println();
 		/**
 		 * -> Trying to create a separate method for each possible search query can lead to brittle code
@@ -69,10 +78,44 @@ public class TestLambdas {
 		 * -> You can instead separate the code that specifies the criteria for which you want to search in a 
 		 * 	different class -> Approach 3
 		 * */
-		printPersonWithinAgeRange(roaster, 25, 35);
+		printPersonWithinAgeRange(roster, 25, 35);
 		
 		System.out.println();
-		printPersons(roaster, new CheckPersonEligibleForSelectiveSrvice());
+		printPersons(roster, new CheckPersonEligibleForSelectiveSrvice());
+	
+		
+		//Approach 4: Specify Search Criteria code in an Anonymous Class
+		/**
+		 * This approach reduces the amount of code required because you don't have to create a new class for 
+		 * each search that you want to perform. However the syntax of the anonymous class is bulky considering that the
+		 * CheckPerson interface contains only one method. In this case use a lambda expression instead of an anonymous class. 
+		 * */
+		
+		printPersons(
+				roster, 
+				new CheckPerson() {
+					@Override
+					public boolean test(Person p) {
+						return p.getGender() == Person.Sex.MALE && p.getAge() >=18 && p.getAge() < 35; 
+					}
+				});
+		
+		
+		//Approach 5: Specify Search Criteria code with Lambda Expression
+		/**
+		 * The CheckPerson interface is a functional interface. A functional interface is any interface that contains
+		 * only one abstract method.(A functional interface may contain one or more default methods or static methods)
+		 * 
+		 * Because a functional interface contains only one abstract method, you can omit the name of that method when you 
+		 * implement it. To do this, instead of using an anonymous class expression, you have a Lambda Expression. 
+		 * */
+		
+		printPersons(roster, p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() < 25);
+		
+		
+		
+		
+		
 		
 		
 	}
