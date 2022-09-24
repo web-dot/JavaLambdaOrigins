@@ -3,6 +3,8 @@ package com.java.lambda;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.java.lambda.Person.Sex;
 
@@ -27,14 +29,7 @@ public class TestLambdas {
 	}
 	
 	//Approach 3: Specify search criteria code in a local class
-	/**
-	 * *Although this approach is less brittle--you don't have to rewrite methods if you change the structure of Person--
-	 * you still have additional code: a new interface and a local class for each search you plan to perform in your 
-	 * application.
-	 * 
-	 * *Because checkPersonEligibleForSelectiveService implements an interface, you can use an anonymous class
-	 * instead of a local class and bypass the need to declare a new class for each search
-	 * */
+	
 	interface CheckPerson{
 		boolean test(Person p);
 	}
@@ -46,8 +41,6 @@ public class TestLambdas {
 		}
 	}
 	
-	
-	
 	public static void printPersons(List<Person> roster, CheckPerson tester) {
 		for(Person p : roster) {
 			if(tester.test(p)) {
@@ -55,6 +48,45 @@ public class TestLambdas {
 			}
 		}
 	}
+	/**
+	 * *Although this approach is less brittle--you don't have to rewrite methods if you change the structure of Person--
+	 * you still have additional code: a new interface and a local class for each search you plan to perform in your 
+	 * application.
+	 * 
+	 * *Because checkPersonEligibleForSelectiveService implements an interface, you can use an anonymous class
+	 * instead of a local class and bypass the need to declare a new class for each search
+	 * */
+	
+	
+	//Approach 6: use standard function interface with lambda
+	//printPersonsWithPredicate
+	public static void printPersonsWithPredicate(List<Person> roster, Predicate<Person> tester) {
+		for(Person p : roster) {
+			if(tester.test(p)) {
+				p.printPerson();
+			}
+		}
+	}
+	
+	
+	//Approach 7: using Lambda Expressions throughout your application
+	/**
+	 * Reconsider the method printPersonWithPredicate to see where else you could use lambda expressions
+	 * Consider the method printPersonsWithPredicate, instead of invoking printPerson, you can specify a different
+	 * action to perform on those Person instances that satisfy the criteria specified by the tester.
+	 * 
+	 * The following method replaces the invocation p.printPerson(), with an instance of Consumer<Person> that
+	 * invokes the method accept.
+	 * */
+	
+	public static void processPersons(List<Person> roster, Predicate<Person> tester, Consumer<Person> block) {
+		for(Person p : roster) {
+			if(tester.test(p)) {
+				block.accept(p);
+			}
+		}
+	}
+	
 	
 	
 	public static void main(String args[]) {
@@ -113,10 +145,62 @@ public class TestLambdas {
 		printPersons(roster, p -> p.getGender() == Person.Sex.MALE && p.getAge() >= 18 && p.getAge() < 25);
 		
 		
+		/**
+		 * you can use a standard functional interface in place of interface CheckPerson, which reduces even further the
+		 * amount of code required
+		 * 
+		 * JDK defines several functional interfaces, which you can find in java.util.function
+		 * 
+		 * For example you can use the Predicate<T> interface in place of CheckPerson. This interface contains the
+		 * method boolean test(T t)
+		 * 
+		 * */
+		
+		//Approach 6: use Standard Functional Interface with Lambda expressions
+		
+		printPersonsWithPredicate(
+				roster,
+				new Predicate<Person>() {
+					@Override
+					public boolean test(Person t) {
+						return t.getGender() == Person.Sex.FEMALE && t.getAge() >= 18 && t.getAge() < 35;
+					}
+				});
+		
+		
+		/*
+		 * The above anonymous class that creates Predicate<T> object can be written as Lambda expression as below
+		 * where the method name can be omitted
+		**/
+		printPersonsWithPredicate(
+				roster, 
+				p -> p.getGender() == Person.Sex.FEMALE & p.getAge() >= 18 && p.getAge() < 25);
 		
 		
 		
+		//Approach 7: 
+		processPersons(
+				roster,
+				new Predicate<Person>() {
+					@Override
+					public boolean test(Person t) {
+						return t.getGender() == Person.Sex.FEMALE && t.getAge() >= 18 && t.getAge() < 35;
+					}
+				},
+				new Consumer<Person>() {
+					@Override
+					public void accept(Person t) {
+						t.printPerson();
+					}
+				});
 		
+		
+		//The above expression can be rewritten using lambda expression as
+		
+		processPersons(
+				roster, 
+				p -> p.getGender() == Person.Sex.FEMALE && p.getAge() >= 18 && p.getAge() < 35, 
+				p -> p.printPerson());
 		
 	}
 }
